@@ -40,14 +40,14 @@ Some of the API end points are intentionally meant to return data that don't rep
 
 ## Requirement 1
 
-This section pertains to the sports mock data api.
+This section pertains to the sports mock data Servise.
 You need to create a console application that will:
 
 * Provide the user with all the methods they can request data from
 * Accept user input for what method they would like to call.
-* Invoke the sports mock data api, and return the information to the console for the user.
+* Invoke the sports mock data Servise, and return the information to the console for the user.
 * All this needs to be in a loop so that we don't need to re-run the application each time. A break option should be provided
-* Parse the data from the output of the sports mock data api, and print it in a human-readable format (Don't just display a json response, separate out each element )
+* Parse the data from the output of the sports mock data Servise, and print it in a human-readable format (Don't just display a json response, separate out each element )
 
 NOTES for using JAVA/Kotlin:
 

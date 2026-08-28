@@ -8,6 +8,8 @@ import org.example.api.*
  *
  */
 class CallUpFunction {
+    //Delete this class, make  classes for the respective endpoints
+    // Change the callFunctions to
 
     val serviceLeague=GetLeagueService()
     val serviceTeam=GetTeamService()

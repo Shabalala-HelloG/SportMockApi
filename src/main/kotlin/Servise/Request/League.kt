@@ -1,30 +1,29 @@
 package org.example.api
 
+import org.example.Model.DataLeague
+import org.example.Model.OneDataLeague
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.gson.Gson
-import org.example.Model.DataCountry
-import org.example.Model.DataCountryByContinent
-import org.example.Model.OneDataCountry
 
-class GetCountryService{
+
+class GetLeagueService{
+
+    //This should br called leagueservice and inside this class we have all the get functions
     /**This is my class to perform everything regarding country resource
      * This contains 3 functions that will perform the get resources
      */
     //why declare them this way
-
-    //Gson docs: https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/Gson.html
     private val gson = Gson()
-    // Jackson Docs:
     private val mapper = jacksonObjectMapper()
-    val keyValue ="countries"
+    val keyValue ="leagues"
 
-    // returns a country when you input the country_ID
-    fun getACountry(inputId:Int):OneDataCountry?{
+    // returns a country when you input the league_ID
+    fun getALeague(inputId:Int): OneDataLeague?{
         val newKeyValue ="$keyValue/$inputId"
-
         val response =GetResponseService().getResponse(newKeyValue)
-        var country :OneDataCountry? = null
+        var league : OneDataLeague? = null
+
         if(!response.isSuccessful){
             println("Error ${response.code} ${response.message}")
 
@@ -33,20 +32,20 @@ class GetCountryService{
             val responseBody = response.body?.string()
             if (responseBody != null) {
                 // need to explain how I got here
-                country=gson.fromJson(responseBody, OneDataCountry::class.java)
+                league=gson.fromJson(responseBody, OneDataLeague::class.java)
             }else{
                 println("there is no body in response")
             }
         }
-        return country
+        return league
 
 
     }
 
-    //returns all the countries
-    fun getCountries(): DataCountry?{
+    //returns all the leagues
+    fun getLeagues(): DataLeague?{
         val response =GetResponseService().getResponse(keyValue)
-        var countries: DataCountry? = null
+        var leagues: DataLeague? = null
 
         if(!response.isSuccessful){
             println("Error ${response.code} ${response.message}")
@@ -55,20 +54,20 @@ class GetCountryService{
             val responseBody = response.body?.string()
             if (responseBody != null) {
                 // if the body of the response is not empty
-                countries = mapper.readValue(responseBody)
+                leagues = mapper.readValue(responseBody)
             }else{
                 println("there is no body in response")
             }
         }
 
-        return countries
+        return leagues
     }
 
-    // returns all the countries in the specified continent
-    fun getACountryByContinent(inputValue:String): DataCountryByContinent?{
-        val newKeyValue ="$keyValue?continent=$inputValue"
+    // returns all the leagues in the specified country using the country_ID
+    fun getLeagueByCountry(inputValue:Int): DataLeague?{
+        val newKeyValue ="$keyValue?country_id=$inputValue"
         val response =GetResponseService().getResponse(newKeyValue)
-        var countries: DataCountryByContinent? = null
+        var leagues: DataLeague? = null
 
         if(!response.isSuccessful){
             println("Error ${response.code} ${response.message}")
@@ -76,12 +75,12 @@ class GetCountryService{
             // if it successful then get the body of the response
             val responseBody = response.body?.string()
             if (responseBody != null) {
-                countries= gson.fromJson(responseBody, DataCountryByContinent::class.java)
+                leagues= gson.fromJson(responseBody, DataLeague::class.java)
             }else{
                 println("there is no body in response")
             }
         }
-        return countries
+        return leagues
 
 
     }
