@@ -1,32 +1,30 @@
 package org.example.api
-
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.gson.Gson
-import org.example.Model.DataCountry
-import org.example.Model.DataCountryByContinent
-import org.example.Model.OneDataCountry
-import java.lang.reflect.Type
+import okhttp3.Response
+import org.example.Team.DataTeam
+import org.example.Team.OneDataTeam
 
-class GetCountryService{
-    //This should br called countryservice and inside this class we have all the get functions
+
+class TeamService{
+
     /**This is my class to perform everything regarding country resource
      * This contains 3 functions that will perform the get resources
      */
-    //why declare them this way
 
-    //Gson docs: https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/Gson.html
     private val gson = Gson()
-    // Jackson Docs:
     private val mapper = jacksonObjectMapper()
-    val keyValue ="countries"
+    private val apiClient = ApiClient()
+    val keyValue ="teams"
 
-    // returns a country when you input the country_ID
-    fun getACountry(inputId:Int):OneDataCountry?{
+
+    fun getATeam(inputId:Int): OneDataTeam? {
+        // returns a team when you input the team_ID
         val newKeyValue ="$keyValue/$inputId"
+        val response =apiClient.getResponse(newKeyValue)
+        var team : OneDataTeam? = null
 
-        val response =GetResponseService().getResponse(newKeyValue)
-        var country :OneDataCountry? = null
         if(!response.isSuccessful){
             println("Error ${response.code} ${response.message}")
 
@@ -35,20 +33,19 @@ class GetCountryService{
             val responseBody = response.body?.string()
             if (responseBody != null) {
                 // need to explain how I got here
-                country=gson.fromJson(responseBody, OneDataCountry::class.java)
+                team=gson.fromJson(responseBody, OneDataTeam::class.java)
             }else{
                 println("there is no body in response")
             }
         }
-        return country
+        return team
 
+    }//getATeam
 
-    }
-
-    //returns all the countries
-    fun getCountries(): DataCountry?{
-        val response =GetResponseService().getResponse(keyValue)
-        var countries: DataCountry? = null
+    //returns all the teams
+    fun getTeams(): DataTeam?{
+        val response =apiClient.getResponse(keyValue)
+        var teams: DataTeam? = null
 
         if(!response.isSuccessful){
             println("Error ${response.code} ${response.message}")
@@ -57,20 +54,36 @@ class GetCountryService{
             val responseBody = response.body?.string()
             if (responseBody != null) {
                 // if the body of the response is not empty
-                countries = mapper.readValue(responseBody)
+                teams = mapper.readValue(responseBody)
             }else{
                 println("there is no body in response")
             }
         }
 
-        return countries
+        return teams
     }
 
-    // returns all the countries in the specified continent
-    fun getACountryByContinent(inputValue:String): DataCountryByContinent?{
-        val newKeyValue ="$keyValue?continent=$inputValue"
-        val response =GetResponseService().getResponse(newKeyValue)
-        var countries: DataCountryByContinent? = null
+    // returns all the teams when team name or country_Id is specified
+    // if the query is broken it returns all teams
+    fun getTeamByCountryIDOrTeamName(countryId:Int?,teamName:String?,): DataTeam?{
+        val newKeyValue: String
+        val response: Response
+        if(countryId==null && teamName != null){
+            //the user ob=nly provided the team name
+            newKeyValue = "$keyValue?teamName=$teamName"
+            response =apiClient.getResponse(newKeyValue)
+        }else if(countryId!=null && teamName==null) {
+            //the user only provided the country_ID
+            newKeyValue = "$keyValue?countryId=$countryId"
+            response =apiClient.getResponse(newKeyValue)
+
+        }else{
+            //both inputs are null
+            response =apiClient.getResponse(keyValue)
+        }
+
+
+        var teams: DataTeam? = null
 
         if(!response.isSuccessful){
             println("Error ${response.code} ${response.message}")
@@ -78,13 +91,12 @@ class GetCountryService{
             // if it successful then get the body of the response
             val responseBody = response.body?.string()
             if (responseBody != null) {
-                val type=DataCountryByContinent::class.java
-                countries= gson.fromJson(responseBody, type)
+                teams = mapper.readValue(responseBody)
             }else{
                 println("there is no body in response")
             }
         }
-        return countries
+        return teams
 
 
     }
