@@ -12,6 +12,7 @@ import com.google.gson.annotations.SerializedName
  *   }
  * }
  */
+
 data class Country(
     var name: String,
     var continent: String,
@@ -22,7 +23,4 @@ data class Country(
     @SerializedName("country_code")
     var countryCode: String
 )
-/**This data class is used by both Jackson and Gson
- * as they coexist but not compatible with each other.
- * link: https://stackoverflow.com/questions/32958521/can-gson-and-jackson-annotations-coexist-in-the-same-pojo
- */
+

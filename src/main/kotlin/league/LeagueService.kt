@@ -1,13 +1,14 @@
 package org.example.api
 
-import org.example.Model.DataLeague
-import org.example.Model.OneDataLeague
+
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.gson.Gson
+import org.example.League.DataLeague
+import org.example.League.OneDataLeague
 
 
-class GetLeagueService{
+class LeagueService{
 
     //This should br called leagueservice and inside this class we have all the get functions
     /**This is my class to perform everything regarding country resource
@@ -16,12 +17,13 @@ class GetLeagueService{
     //why declare them this way
     private val gson = Gson()
     private val mapper = jacksonObjectMapper()
+    private val apiClient = ApiClient()
     val keyValue ="leagues"
 
     // returns a country when you input the league_ID
     fun getALeague(inputId:Int): OneDataLeague?{
         val newKeyValue ="$keyValue/$inputId"
-        val response =GetResponseService().getResponse(newKeyValue)
+        val response =apiClient.getResponse(newKeyValue)
         var league : OneDataLeague? = null
 
         if(!response.isSuccessful){
@@ -44,7 +46,7 @@ class GetLeagueService{
 
     //returns all the leagues
     fun getLeagues(): DataLeague?{
-        val response =GetResponseService().getResponse(keyValue)
+        val response =apiClient.getResponse(keyValue)
         var leagues: DataLeague? = null
 
         if(!response.isSuccessful){
@@ -66,7 +68,7 @@ class GetLeagueService{
     // returns all the leagues in the specified country using the country_ID
     fun getLeagueByCountry(inputValue:Int): DataLeague?{
         val newKeyValue ="$keyValue?country_id=$inputValue"
-        val response =GetResponseService().getResponse(newKeyValue)
+        val response =apiClient.getResponse(newKeyValue)
         var leagues: DataLeague? = null
 
         if(!response.isSuccessful){

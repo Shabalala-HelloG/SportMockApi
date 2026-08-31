@@ -5,7 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
-class GetResponseService{
+class ApiClient{
     /**I read through 'OkHttp in Kotlin: Complete Guide to GET & POST Requests' webpage on how
      * to use the okHttp
      * link:https://blog.deveshrx.com/okhttp-android-kotlin-tutorial
