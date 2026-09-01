@@ -1,11 +1,6 @@
-package org.example.Controllers
+package league
 
-import org.example.Model.League
-import org.example.League.DataLeague
-import org.example.League.OneDataLeague
-import org.example.api.LeagueService
-
-class LeagueController {
+class LeagueFetcher {
     val leagueService=LeagueService()
 
     fun fetchAllLeagues() {

@@ -1,4 +1,4 @@
-package org.example.api
+package client
 
 import okhttp3.Credentials
 import okhttp3.OkHttpClient

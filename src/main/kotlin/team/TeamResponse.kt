@@ -1,6 +1,6 @@
 package org.example.Team
 
-import org.example.Model.Team
+import team.Team
 
 /**This data class is used by both Jackson and Gson
  * as they coexist but not compatible with each other.

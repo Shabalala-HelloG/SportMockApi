@@ -1,4 +1,4 @@
-package org.example.Model
+package team
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.gson.annotations.SerializedName
 

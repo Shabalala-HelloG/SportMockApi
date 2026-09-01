@@ -1,6 +1,4 @@
-package org.example.League
-
-import org.example.Model.League
+package league
 
 /**This data class is used by both Jackson and Gson
  * as they coexist but not compatible with each other.

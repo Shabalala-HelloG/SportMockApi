@@ -1,6 +1,8 @@
-package org.example.Model
+package league
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.gson.annotations.SerializedName
+import country.Country
+
 /**
  * {
  *   "data": {

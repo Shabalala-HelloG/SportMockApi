@@ -1,6 +1,4 @@
-package org.example
-
-import org.example.consol.UserConsole
+import console.UserConsole
 
 fun main() {
     //here I will just call my console

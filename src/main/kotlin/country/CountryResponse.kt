@@ -1,6 +1,4 @@
-package org.example.Country
-
-import org.example.Model.Country
+package country
 
 /**This data class is used by both Jackson and Gson
  * as they coexist but not compatible with each other.

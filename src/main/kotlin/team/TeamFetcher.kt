@@ -1,14 +1,12 @@
-package org.example.Controllers
+package team
 
-import org.example.Model.Country
-import org.example.Model.Team
+import country.Country
 import org.example.Team.DataTeam
 import org.example.Team.OneDataTeam
-import org.example.Country.DataCountry
-import org.example.api.CountryService
-import org.example.api.TeamService
+import country.DataCountry
+import country.CountryService
 
-class TeamController {
+class TeamFetcher {
     private val teamService= TeamService()
     private val countryService= CountryService()
 

@@ -1,11 +1,13 @@
-package org.example.api
+package league
 
 
+import client.ApiClient
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.gson.Gson
-import org.example.League.DataLeague
-import org.example.League.OneDataLeague
+import exception.ApiResponseException
+import exception.ApiUnavailableException
+import java.io.IOException
 
 
 class LeagueService{
@@ -22,67 +24,83 @@ class LeagueService{
 
     // returns a country when you input the league_ID
     fun getALeague(inputId:Int): OneDataLeague?{
-        val newKeyValue ="$keyValue/$inputId"
-        val response =apiClient.getResponse(newKeyValue)
-        var league : OneDataLeague? = null
 
-        if(!response.isSuccessful){
-            println("Error ${response.code} ${response.message}")
+        try {
 
-        }else{
-            // if it successful then get the body of the response
-            val responseBody = response.body?.string()
-            if (responseBody != null) {
-                // need to explain how I got here
-                league=gson.fromJson(responseBody, OneDataLeague::class.java)
-            }else{
-                println("there is no body in response")
+            val newKeyValue = "$keyValue/$inputId"
+            val response = apiClient.getResponse(newKeyValue)
+            var league: OneDataLeague? = null
+
+            if (!response.isSuccessful) {
+                throw ApiResponseException(response.code)
+
+            } else {
+                // if it successful then get the body of the response
+                val responseBody = response.body?.string()
+                if (responseBody != null) {
+                    // need to explain how I got here
+                    league = gson.fromJson(responseBody, OneDataLeague::class.java)
+                } else {
+                    println("there is no body in response")
+                }
             }
+            return league
+        }catch (_: IOException){
+            throw ApiUnavailableException("Unable to connect to the API")
         }
-        return league
 
 
     }
 
     //returns all the leagues
     fun getLeagues(): DataLeague?{
-        val response =apiClient.getResponse(keyValue)
-        var leagues: DataLeague? = null
+        try {
 
-        if(!response.isSuccessful){
-            println("Error ${response.code} ${response.message}")
-        }else{
-            // if it successful then get the body of the response
-            val responseBody = response.body?.string()
-            if (responseBody != null) {
-                // if the body of the response is not empty
-                leagues = mapper.readValue(responseBody)
-            }else{
-                println("there is no body in response")
+            val response = apiClient.getResponse(keyValue)
+            var leagues: DataLeague? = null
+
+            if (!response.isSuccessful) {
+                throw ApiResponseException(response.code)
+            } else {
+                // if it successful then get the body of the response
+                val responseBody = response.body?.string()
+                if (responseBody != null) {
+                    // if the body of the response is not empty
+                    leagues = mapper.readValue(responseBody)
+                } else {
+                    println("there is no body in response")
+                }
             }
-        }
 
-        return leagues
+            return leagues
+        }catch (_: IOException){
+            throw ApiUnavailableException("Unable to connect to the API")
+        }
     }
 
     // returns all the leagues in the specified country using the country_ID
     fun getLeagueByCountry(inputValue:Int): DataLeague?{
-        val newKeyValue ="$keyValue?country_id=$inputValue"
-        val response =apiClient.getResponse(newKeyValue)
-        var leagues: DataLeague? = null
+       try {
 
-        if(!response.isSuccessful){
-            println("Error ${response.code} ${response.message}")
-        }else{
-            // if it successful then get the body of the response
-            val responseBody = response.body?.string()
-            if (responseBody != null) {
-                leagues= gson.fromJson(responseBody, DataLeague::class.java)
-            }else{
-                println("there is no body in response")
-            }
-        }
-        return leagues
+           val newKeyValue = "$keyValue?country_id=$inputValue"
+           val response = apiClient.getResponse(newKeyValue)
+           var leagues: DataLeague? = null
+
+           if (!response.isSuccessful) {
+               throw ApiResponseException(response.code)
+           } else {
+               // if it successful then get the body of the response
+               val responseBody = response.body?.string()
+               if (responseBody != null) {
+                   leagues = gson.fromJson(responseBody, DataLeague::class.java)
+               } else {
+                   println("there is no body in response")
+               }
+           }
+           return leagues
+       }catch (_: IOException){
+           throw ApiUnavailableException("Unable to connect to the API")
+       }
 
 
     }

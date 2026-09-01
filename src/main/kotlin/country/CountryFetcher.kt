@@ -1,13 +1,6 @@
-package org.example.Controllers
+package country
 
-import org.example.Country.DataCountry
-import org.example.Country.OneDataCountry
-import org.example.Country.DataCountryByContinent
-import org.example.Model.Country
-
-import org.example.api.CountryService
-
-class CountryController {
+class CountryFetcher {
 
     private val countryService= CountryService()
 
@@ -96,33 +89,40 @@ class CountryController {
 
     }//fetchCountryByContinent
 
-//yet convert it into a readable code using when statement
     private fun checkContinent(input:String): String?{
         // A simple functions to evaluate user input
         var continent: String?
 
-        if (input == "1" || input.equals("Africa", ignoreCase = true)) {
+    when {
+        input == "1" || input.equals("Africa", ignoreCase = true) -> {
             continent = "Africa"
 
-        } else if (input == "2" || input.equals("Asia", ignoreCase = true)) {
+        }
+        input == "2" || input.equals("Asia", ignoreCase = true) -> {
             continent = "Asia"
 
-        } else if (input == "3" || input.equals("Europe", ignoreCase = true)) {
+        }
+        input == "3" || input.equals("Europe", ignoreCase = true) -> {
             continent = "Europe"
 
-        } else if (input == "4" || input.equals("North America", ignoreCase = true)) {
+        }
+        input == "4" || input.equals("North America", ignoreCase = true) -> {
             continent = "North America"
 
-        } else if (input == "5" || input.equals("Oceania", ignoreCase = true)) {
+        }
+        input == "5" || input.equals("Oceania", ignoreCase = true) -> {
             continent = "Oceania"
 
-        } else if (input == "6" || input.equals("South America", ignoreCase = true)) {
+        }
+        input == "6" || input.equals("South America", ignoreCase = true) -> {
             continent = "South America"
 
-        } else {
-            println("Incorrect continent name")
-            continent=null
         }
+        else -> {
+            println("Incorrect continent name")
+            continent = null
+        }
+    }
 
         return continent
     }

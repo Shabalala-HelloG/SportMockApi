@@ -1,8 +1,5 @@
-package org.example.consol
+package console
 
-import org.example.console.CountryConsole
-import org.example.console.LeagueConsole
-import org.example.console.TeamConsole
 import kotlin.system.exitProcess
 
 class UserConsole {
