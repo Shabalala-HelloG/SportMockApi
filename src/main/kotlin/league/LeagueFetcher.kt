@@ -1,5 +1,9 @@
 package league
 
+import country.Country
+import country.CountryService
+import country.DataCountry
+
 class LeagueFetcher {
     val leagueService=LeagueService()
 
@@ -25,28 +29,33 @@ class LeagueFetcher {
     }//fetchAllLeagues
 
     fun fetchALeague() {
-        // Fetches a league
-        println("Please provide a number for the league ID:")
-        val input = readlnOrNull()?.toIntOrNull()
-
-        if (input != null) {
-            val league: OneDataLeague? = leagueService.getALeague(input)
-            val leagueData = league?.data
-            if (leagueData != null) {
-                println("${leagueData.leagueID}. ${leagueData.name} League from ${leagueData.country.name}")
-            } else {
-                println("There is nothing ")
+        //User my still be able to select the respective League
+        println("Please provide the name for your league:")
+        val leagueDataList: DataLeague? = leagueService.getLeagues()
+        if (leagueDataList != null) {
+            val leagueList: List<League> = leagueDataList.data
+            when (val possibleLeague= readlnOrNull()) {
+                null -> println("Error: input is not a valid league ")
+                else -> {
+                    var counter =0
+                    for ((name, country, leagueID) in leagueList) {
+                        if(name.contains(possibleLeague,true)) {
+                            println("$leagueID. $name of the country ${(country.name).uppercase()}. ")
+                            counter++
+                        }
+                    }
+                     if(counter==0)println("No league with name $possibleLeague found.")
+                }
             }
-        } else {
-            println("You input was incorrect, its not a valid number ")
-        }
+        }else println("NO leagues found")
 
     }//fetchALeague
 
     fun fetchLeaguesByCountry() {
         //Fetches leagues by their country
-        println("Please provide a number for the country ID:")
+        countryFinder()// this will print the list of all the possible countries
 
+        println("Enter the countryID of the country you want to fetch from the given list:")
         val input = readlnOrNull()?.toIntOrNull()
         /**
          * The issues with this is that if the league_ID is out of bound the request is still carried out
@@ -83,4 +92,25 @@ class LeagueFetcher {
 
 
     }//fetchLeaguesByCountry
+
+    fun countryFinder(){
+        //this should return a list
+        println("Please provide the name for your country:")
+        val countryDataList: DataCountry? = CountryService().getCountries()
+        if (countryDataList != null) {
+            val countryList: List<Country> = countryDataList.data
+            when (val possibleCountry= readlnOrNull()) {
+                null -> println("Error: input is not a valid country ")
+                else -> {
+                    for ((name, _, countryID) in countryList) {
+                        if(name.contains(possibleCountry,true)) println("$countryID. $name")
+                    }
+                }
+            }
+        }else{
+            println("NO countries found")
+        }
+    }//countryFinder
+
+
 }

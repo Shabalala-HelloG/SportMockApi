@@ -13,7 +13,7 @@ class TeamConsole {
 
         while(true){
 
-            println("1.View all teams\n2.View a team\n3.View by countryId or teamName\n4.View teams by country name\n5.back\n6.quit")
+            println("1.View all teams\n2.View a team(s)\n3.View by countryId or teamName\n4.View teams by country name\n5.back\n6.quit")
             try {
 
 
@@ -25,8 +25,8 @@ class TeamConsole {
                     "4" -> fetch.fetchTeamsWithCountry()
                     "5" -> break
                     "6" -> exitProcess(0)
-                    null -> println("Error: Invalid input please try again later")
-                    else -> println("Error: Invalid input please try again")
+                    null -> continue
+                    else -> println("Error: Invalid input please choice from the provided options")
                 }
                 println("-------------------\n")
             }catch (e: ApiUnavailableException) {
@@ -35,8 +35,9 @@ class TeamConsole {
             } catch (e: ApiResponseException) {
 
                 when (e.statusCode) {
-                    401 -> println("Authentication failed.")
-                    404 -> println("The requested resource was not found.")
+                    401 -> println("${e.statusCode}Authentication failed,Your credentials are invalid.")
+                    404 -> println("${e.statusCode}The requested resource was not found.")
+                    301 -> println("${e.statusCode}The requested resource has been permanently moved.")
                     else -> println("The API returned an error: ${e.statusCode}")
                 }
             }

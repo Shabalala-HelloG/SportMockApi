@@ -15,9 +15,8 @@ class UserConsole {
 
             when {
                 userInput == null -> {
-                    println("Error: Invalid input please try again later")
+                    println("Error: Invalid input please choice from the provided options")
                 }
-
                 userInput == "1" || userInput.uppercase() == "COUNTRIES" || userInput.uppercase() == "COUNTRY" -> {
 
                     println("DO COUNTRY STUFF")//call country console
@@ -40,7 +39,7 @@ class UserConsole {
                     exitProcess(0)
                 }
                 else -> {
-                    println("Error: Invalid input please try again")
+                    println("Error: Invalid input please choice from the provided options")
                     println("-------------------\n")
                 }
             }

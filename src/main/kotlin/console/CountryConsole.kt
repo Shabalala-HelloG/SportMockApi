@@ -23,7 +23,7 @@ class CountryConsole {
                 "3" -> fetch.fetchCountriesByContinent()
                 "4" -> break
                 "5" -> exitProcess(0)
-                null -> println("Error: Invalid input choice from the provided options")
+                null -> continue
                 else -> println("Error: Invalid input please choice from the provided options")
             }
             println("-------------------\n")
@@ -34,8 +34,9 @@ class CountryConsole {
 
                 when (e.statusCode) {
                     //for now, I only cater for the following
-                    401 -> println("${e.statusCode}:Authentication failed.")
-                    404 -> println("${e.statusCode}:The requested resource was not found.")
+                    401 -> println("${e.statusCode}Authentication failed,Your credentials are invalid.")
+                    404 -> println("${e.statusCode}The requested resource was not found.")
+                    301 -> println("${e.statusCode}The requested resource has been permanently moved.")
                     else -> println("The API returned an error: ${e.statusCode}")
                 }
             }

@@ -2,7 +2,6 @@ package team
 
 import country.Country
 import org.example.Team.DataTeam
-import org.example.Team.OneDataTeam
 import country.DataCountry
 import country.CountryService
 
@@ -47,24 +46,41 @@ class TeamFetcher {
 
     fun fetchATeam() {
         // Fetches a Team
-        println("Please provide a number for the team ID:")
-        val input = readlnOrNull()?.toIntOrNull()
-
-        if (input != null) {
-            val team: OneDataTeam? = teamService.getATeam(input)
-            val teamData = team?.data
-            if (teamData != null) {
-                if (teamData.foundYear != 0) {
-                    println("${teamData.teamId}. ${teamData.teamName} was founded in ${teamData.foundYear}")
-                } else {
-                    println("${teamData.teamId}. ${teamData.teamName}")
+        println("Please provide the name of your team")
+        val teamDataList: DataTeam? = teamService.getTeams()
+        if (teamDataList != null) {
+            val teamList: List<Team> = teamDataList.data
+            when(val possibleTeam = readlnOrNull()) {
+                null -> println("Error: input is not a valid league ")
+                else -> {
+                    var counter =0
+                    for ((teamId, teamName) in teamList) {
+                        if(teamName.contains(possibleTeam,true)) {
+                            println("$teamId. $teamName")
+                            counter++
+                        }
+                    }
+                    if(counter==0)println("No team with name $possibleTeam found.")
                 }
-            } else {
-                println("There is nothing ")
             }
-        } else {
-            println("You input was incorrect, its not a valid number ")
-        }
+        }else println("NO team found")
+
+
+//        if (input != null) {
+//            val team: OneDataTeam? = teamService.getATeam(input)
+//            val teamData = team?.data
+//            if (teamData != null) {
+//                if (teamData.foundYear != 0) {
+//                    println("${teamData.teamId}. ${teamData.teamName} was founded in ${teamData.foundYear}")
+//                } else {
+//                    println("${teamData.teamId}. ${teamData.teamName}")
+//                }
+//            } else {
+//                println("There is nothing ")
+//            }
+//        } else {
+//            println("You input was incorrect, its not a valid number ")
+//        }
 
     }//fetchTeam
 

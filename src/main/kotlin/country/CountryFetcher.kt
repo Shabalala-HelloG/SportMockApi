@@ -40,20 +40,40 @@ class CountryFetcher {
 
     fun fetchACountry() {
         //Fetches a country
-        println("Please provide a number for the country ID:")
-        val input = readlnOrNull()?.toIntOrNull()
-
-        if (input != null) {
-            val country: OneDataCountry? = countryService.getACountry(input)
-            val countryData = country?.data
-            if (countryData != null) {
-                println("${countryData.countryID}. ${countryData.name} in continent ${countryData.continent}")
-            } else {
-                println("There is nothing,this means the country ID isn't associate a country  ")
+        println("Please provide the name of your country")
+        val countryDataList: DataCountry? = countryService.getCountries()
+        if (countryDataList != null) {
+            val countryList: List<Country> = countryDataList.data
+            when(val possibleCountry = readlnOrNull()) {
+                null -> println("Error: input is not a valid league ")
+                else -> {
+                    var counter =0
+                    for ((name, continent, countryID) in countryList) {
+                        if(name.contains(possibleCountry,true))println("$countryID. $name from continent $continent")
+                        counter++
+                    }
+                    if(counter==0)println("No country with name $possibleCountry found.")
+                }
             }
-        } else {
-            println("You input was incorrect, its not a valid number ")
-        }
+        } else println("NO team found")
+
+
+
+
+//        println("Please provide a number for the country ID:")
+//        val input = readlnOrNull()?.toIntOrNull()
+//
+//        if (input != null) {
+//            val country: OneDataCountry? = countryService.getACountry(input)
+//            val countryData = country?.data
+//            if (countryData != null) {
+//                println("${countryData.countryID}. ${countryData.name} in continent ${countryData.continent}")
+//            } else {
+//                println("There is nothing,this means the country ID isn't associate a country  ")
+//            }
+//        } else {
+//            println("You input was incorrect, its not a valid number ")
+//        }
 
     }//fetchACountry
 
