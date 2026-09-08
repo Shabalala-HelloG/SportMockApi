@@ -1,12 +1,14 @@
 package country
 
+import client.ApiResponse
+
 class CountryFetcher {
 
     private val countryService= CountryService()
 
     fun fetchAllCountries() {
         // Fetches all the countries
-        val countryDataList: DataCountry? = countryService.getCountries()
+        val countryDataList: ApiResponse<List<Country>>? = countryService.getCountries()
 
         if (countryDataList == null) {
             println("The are no countries")
@@ -40,40 +42,22 @@ class CountryFetcher {
 
     fun fetchACountry() {
         //Fetches a country
-        println("Please provide the name of your country")
-        val countryDataList: DataCountry? = countryService.getCountries()
-        if (countryDataList != null) {
-            val countryList: List<Country> = countryDataList.data
-            when(val possibleCountry = readlnOrNull()) {
-                null -> println("Error: input is not a valid league ")
-                else -> {
-                    var counter =0
-                    for ((name, continent, countryID) in countryList) {
-                        if(name.contains(possibleCountry,true))println("$countryID. $name from continent $continent")
-                        counter++
-                    }
-                    if(counter==0)println("No country with name $possibleCountry found.")
-                }
+       countryFinder()
+
+        println("Enter the countryID of the country you want to view from the given list:")
+        val input = readlnOrNull()?.toIntOrNull()
+
+        if (input != null) {
+            val country: ApiResponse<Country>? = countryService.getACountry(input)
+            val countryData = country?.data
+            if (countryData != null) {
+                println("${countryData.countryID}. ${countryData.name} in continent ${countryData.continent}")
+            } else {
+                println("There is nothing,this means the country ID isn't associate a country  ")
             }
-        } else println("NO team found")
-
-
-
-
-//        println("Please provide a number for the country ID:")
-//        val input = readlnOrNull()?.toIntOrNull()
-//
-//        if (input != null) {
-//            val country: OneDataCountry? = countryService.getACountry(input)
-//            val countryData = country?.data
-//            if (countryData != null) {
-//                println("${countryData.countryID}. ${countryData.name} in continent ${countryData.continent}")
-//            } else {
-//                println("There is nothing,this means the country ID isn't associate a country  ")
-//            }
-//        } else {
-//            println("You input was incorrect, its not a valid number ")
-//        }
+        } else {
+            println("You input was incorrect, its not a valid number ")
+        }
 
     }//fetchACountry
 
@@ -82,14 +66,14 @@ class CountryFetcher {
         println("These are the continents to choose from:")
         println("1.Africa\n2.Asia\n3.Europe\n4.North America\n5.Oceania\n6.South America")
         println("You can either enter the continent name or it's number on the list")
-        println("Please provide the name of the continent:")
+        println("Enter your input:")
 
         val input = readlnOrNull()
 
         if (input != null) {
             val continentName : String? = checkContinent(input)
             if(continentName !=null){
-                val country: DataCountryByContinent? = countryService.getACountryByContinent(continentName)
+                val country: ApiResponse<Map<String,Country>>? = countryService.getACountryByContinent(continentName)
                 val countryData = country?.data
                 if (countryData != null) {
                     for((name, continent, countryID) in countryData.values){
@@ -145,6 +129,26 @@ class CountryFetcher {
     }
 
         return continent
-    }
+    }//checkContinent
+
+    private fun countryFinder() {
+        //this should return a list
+        println("Please provide the name for your country:")
+        val countryDataList: ApiResponse<List<Country>>? = countryService.getCountries()
+        if (countryDataList != null) {
+            val countryList: List<Country> = countryDataList.data
+            when (val possibleCountry = readlnOrNull()) {
+                null -> println("Error: input is not a valid country ")
+                else -> {
+                    var counter =0
+                    for ((name, continent, countryID) in countryList) {
+                        if(name.contains(possibleCountry,true))println("$countryID. $name from continent $continent")
+                        counter++
+                    }
+                    if(counter==0)println("No country with name $possibleCountry found.")
+                }
+            }
+        } else println("NO countries found")
+    }//countryFinder
 
 }

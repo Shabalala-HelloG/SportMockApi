@@ -2,105 +2,94 @@ package country
 
 
 import client.ApiClient
+import client.ApiResponse
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.google.gson.Gson
 import exception.ApiResponseException
 import exception.ApiUnavailableException
 import java.io.IOException
 
-class CountryService{
-    //This should br called country service and inside this class we have all the get functions
-    /**This is my class to perform everything regarding country resource
-     * This contains 3 functions that will perform the get resources
-     */
-    //why declare them this way
+class CountryService {
 
-    //Gson docs: https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/Gson.html
-    private val gson = Gson()
-    // Jackson Docs:
     private val mapper = jacksonObjectMapper()
     private val apiClient = ApiClient()
-    val keyValue ="countries"
+    private val keyValue = "countries"
 
-    // returns a country when you input the country_ID
-    fun getACountry(inputId:Int): OneDataCountry?{
+
+    fun getACountry(inputId: Int): ApiResponse<Country>? {
+        // returns a country when you input the country_ID
         try {
 
             val newKeyValue = "$keyValue/$inputId"
 
             val response = apiClient.getResponse(newKeyValue)
-            var country: OneDataCountry? = null
+            var country: ApiResponse<Country>? = null
             if (!response.isSuccessful) {
                 throw ApiResponseException(response.code)
 
             } else {
-                // if it successful then get the body of the response
                 val responseBody = response.body?.string()
                 if (responseBody != null) {
-                    // need to explain how I got here
-                    country = gson.fromJson(responseBody, OneDataCountry::class.java)
+                    country = mapper.readValue(responseBody) as ApiResponse<Country>
                 } else {
                     println("there is no body in response")
                 }
             }
             return country
-        }catch (_: IOException){
+        } catch (_: IOException) {
             throw ApiUnavailableException("Unable to connect to the API")
         }
 
 
-    }
+    }//getACountry
 
-    //returns all the countries
-    fun getCountries(): DataCountry?{
+
+    fun getCountries(): ApiResponse<List<Country>>? {
+        //returns all the countries
         try {
             val response = apiClient.getResponse(keyValue)
-            var countries: DataCountry? = null
+            var countries: ApiResponse<List<Country>>? = null
 
             if (!response.isSuccessful) {
                 throw ApiResponseException(response.code)
             } else {
-                // if it successful then get the body of the response
                 val responseBody = response.body?.string()
                 if (responseBody != null) {
-                    // if the body of the response is not empty
-                    countries = mapper.readValue(responseBody)
+                    countries = mapper.readValue(responseBody) as ApiResponse<List<Country>>?
                 } else {
                     println("there is no body in response")
                 }
             }
 
             return countries
-        }catch (_: IOException){
+        } catch (_: IOException) {
             throw ApiUnavailableException("Unable to connect to the API")
         }
-    }
+    }//getCountries
 
-    // returns all the countries in the specified continent
-    fun getACountryByContinent(inputValue:String): DataCountryByContinent?{
+
+    fun getACountryByContinent(inputValue: String): ApiResponse<Map<String, Country>>? {
+        // returns all the countries in the specified continent
         try {
 
             val newKeyValue = "$keyValue?continent=$inputValue"
             val response = apiClient.getResponse(newKeyValue)
-            var countries: DataCountryByContinent? = null
+            var countries: ApiResponse<Map<String, Country>>? = null
 
             if (!response.isSuccessful) {
                 throw ApiResponseException(response.code)
             } else {
-                // if it successful then get the body of the response
                 val responseBody = response.body?.string()
                 if (responseBody != null) {
-                    val type = DataCountryByContinent::class.java
-                    countries = gson.fromJson(responseBody, type)
+                    countries = mapper.readValue(responseBody) as ApiResponse<Map<String, Country>>?
                 } else {
                     println("there is no body in response")
                 }
             }
             return countries
-        }catch (_: IOException){
+        } catch (_: IOException) {
             throw ApiUnavailableException("Unable to connect to the API")
         }
 
-    }
+    }//getACountryByContinent
 }

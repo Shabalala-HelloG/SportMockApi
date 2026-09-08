@@ -1,8 +1,7 @@
 package team
 
+import client.ApiResponse
 import country.Country
-import org.example.Team.DataTeam
-import country.DataCountry
 import country.CountryService
 
 class TeamFetcher {
@@ -11,7 +10,7 @@ class TeamFetcher {
 
     fun fetchAllTeams() {
         // Fetches all teams
-        val teamDataList: DataTeam? = teamService.getTeams()
+        val teamDataList: ApiResponse<List<Team>>? = teamService.getTeams()
         if (teamDataList == null) {
             println("There is no teams")
         } else {
@@ -46,41 +45,25 @@ class TeamFetcher {
 
     fun fetchATeam() {
         // Fetches a Team
-        println("Please provide the name of your team")
-        val teamDataList: DataTeam? = teamService.getTeams()
-        if (teamDataList != null) {
-            val teamList: List<Team> = teamDataList.data
-            when(val possibleTeam = readlnOrNull()) {
-                null -> println("Error: input is not a valid league ")
-                else -> {
-                    var counter =0
-                    for ((teamId, teamName) in teamList) {
-                        if(teamName.contains(possibleTeam,true)) {
-                            println("$teamId. $teamName")
-                            counter++
-                        }
-                    }
-                    if(counter==0)println("No team with name $possibleTeam found.")
+        teamFinder()
+        println("Enter the teamID of the team you want to view from the given list:")
+        val input = readlnOrNull()?.toIntOrNull()
+
+        if (input != null) {
+            val team: ApiResponse<Team>? = teamService.getATeam(input)
+            val teamData = team?.data
+            if (teamData != null) {
+                if (teamData.foundYear != 0) {
+                    println("${teamData.teamId}. ${teamData.teamName} was founded in ${teamData.foundYear}")
+                } else {
+                    println("${teamData.teamId}. ${teamData.teamName}")
                 }
+            } else {
+                println("There is nothing ")
             }
-        }else println("NO team found")
-
-
-//        if (input != null) {
-//            val team: OneDataTeam? = teamService.getATeam(input)
-//            val teamData = team?.data
-//            if (teamData != null) {
-//                if (teamData.foundYear != 0) {
-//                    println("${teamData.teamId}. ${teamData.teamName} was founded in ${teamData.foundYear}")
-//                } else {
-//                    println("${teamData.teamId}. ${teamData.teamName}")
-//                }
-//            } else {
-//                println("There is nothing ")
-//            }
-//        } else {
-//            println("You input was incorrect, its not a valid number ")
-//        }
+        } else {
+            println("You input was incorrect, its not a valid number ")
+        }
 
     }//fetchTeam
 
@@ -90,7 +73,7 @@ class TeamFetcher {
         val countryId : Int? = readlnOrNull()?.toIntOrNull()
         println("Please provide the name of the team")
         val teamName: String? = readlnOrNull()?.takeIf { it.isNotBlank() }
-        val teamDataList = teamService.getTeamByCountryIDOrTeamName(teamName = teamName, countryId = countryId)
+        val teamDataList = teamService.getTeamByCountryOrTeamName(teamName = teamName, countryId = countryId)
 
         if (teamDataList == null) {
             println("There is no teams")
@@ -133,14 +116,14 @@ class TeamFetcher {
 
     fun fetchTeamsWithCountry() {
         //fetches Teams from a specific country
-        val teamDataList: DataTeam? = teamService.getTeams()
+        val teamDataList: ApiResponse<List<Team>>? = teamService.getTeams()
 
         // this service is used to retrieve the countries
-        val countryDataList: DataCountry? = countryService.getCountries()
+        val countryDataList: ApiResponse<List<Country>>? = countryService.getCountries()
 
         println("Please provide the name of the country(not case sensitive)")
         var countryFromUser: String? = readlnOrNull()?.takeIf { it.isNotBlank() }
-        val defaultCountry= "south africa"
+        val defaultCountry= "South Africa"
 
         if(countryFromUser == null){
             println("Since you did not provide a country we will use default country: South africa")
@@ -182,5 +165,26 @@ class TeamFetcher {
             }
 
         }
-    }
+    }//fetchTeamWithCountry
+
+    private fun teamFinder() {
+        println("Please provide the name of your team")
+        val teamDataList: ApiResponse<List<Team>>? = teamService.getTeams()
+        if (teamDataList != null) {
+            val teamList: List<Team> = teamDataList.data
+            when(val possibleTeam = readlnOrNull()) {
+                null -> println("Error: input is not a valid league ")
+                else -> {
+                    var counter =0
+                    for ((teamId, teamName) in teamList) {
+                        if(teamName.contains(possibleTeam,true)) {
+                            println("$teamId. $teamName")
+                            counter++
+                        }
+                    }
+                    if(counter==0)println("No team with name $possibleTeam found.")
+                }
+            }
+        }else println("NO team found")
+    }//teamFinder
 }

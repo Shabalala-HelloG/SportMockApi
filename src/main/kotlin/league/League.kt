@@ -1,6 +1,5 @@
 package league
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.google.gson.annotations.SerializedName
 import country.Country
 
 /**
@@ -21,6 +20,5 @@ data class League(
     var name: String,
     var country: Country,
     @JsonProperty("league_id")
-    @SerializedName("league_id")
     var leagueID: Int
 )

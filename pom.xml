@@ -58,7 +58,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
-                <!-- here I will have to make changes-->
                 <configuration>
                     <mainClass>MainKt</mainClass>
                 </configuration>
@@ -87,13 +86,6 @@
         </dependency>
 
         <!-- these are the dependencies I added-->
-        <!-- Gson: To convert from JSON to My kotlin objects-->
-        <!-- Link:https://central.sonatype.com/artifact/com.google.code.gson/gson -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.14.0</version>
-        </dependency>
         <!--okHttp: I will use this as my Web serves client-->
         <!-- Link: https://central.sonatype.com/artifact/com.squareup.okhttp3/okhttp-->
         <dependency>
