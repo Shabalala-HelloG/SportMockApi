@@ -1,16 +1,17 @@
 package league
 
+import service.Services
 import client.ApiResponse
 import country.Country
-import country.CountryService
 
 class LeagueFetcher {
-    private val leagueService = LeagueService()
+
+    private val keyValue = "leagues"
 
 
     fun fetchAllLeagues() {
         //Fetches all the leagues
-        val leagueDataList: ApiResponse<List<League>>? = leagueService.getLeagues()
+        val leagueDataList: ApiResponse<List<League>>? = Services().services< ApiResponse<List<League>>>(keyValue=keyValue)
         if (leagueDataList == null) {
             println("The is no data")
         } else {
@@ -36,7 +37,7 @@ class LeagueFetcher {
         println("Enter the leagueID of the league you want to view from the given list:")
         val input = readlnOrNull()?.toIntOrNull()
         if (input != null) {
-            val league : ApiResponse<League>?= leagueService.getALeague(input)
+            val league : ApiResponse<League>? = Services().services<ApiResponse<League>>(keyValue="$keyValue/$input")
             val leagueData = league?.data
 
             if (leagueData != null) {
@@ -62,7 +63,7 @@ class LeagueFetcher {
          */
 
         if (input != null) {
-            val leagueDataList: ApiResponse<List<League>>? = leagueService.getLeagueByCountry(input)
+            val leagueDataList: ApiResponse<List<League>>? = Services().services<ApiResponse<List<League>>>(keyValue="$keyValue?country_id=$input")
             if (leagueDataList == null) {
                 println("The is no data")
             } else {
@@ -96,7 +97,7 @@ class LeagueFetcher {
     private fun countryFinder() {
         //this should return a list
         println("Please provide the name for your country:")
-        val countryDataList: ApiResponse<List<Country>>? = CountryService().getCountries()
+        val countryDataList: ApiResponse<List<Country>>? = Services().services< ApiResponse<List<Country>>>(keyValue="countries")
         if (countryDataList != null) {
             val countryList: List<Country> = countryDataList.data
             when (val possibleCountry = readlnOrNull()) {
@@ -115,7 +116,7 @@ class LeagueFetcher {
 
     private fun leagueFinder() {
         println("Please provide the name for your league:")
-        val leagueDataList: ApiResponse<List<League>>? = leagueService.getLeagues()
+        val leagueDataList: ApiResponse<List<League>>? = Services().services< ApiResponse<List<League>>>(keyValue=keyValue)
         if (leagueDataList != null) {
             val leagueList: List<League> = leagueDataList.data
             when (val possibleLeague = readlnOrNull()) {

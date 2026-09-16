@@ -1,16 +1,15 @@
 package team
 
+import service.Services
 import client.ApiResponse
 import country.Country
-import country.CountryService
 
 class TeamFetcher {
-    private val teamService= TeamService()
-    private val countryService= CountryService()
+    private val keyValue = "teams"
 
     fun fetchAllTeams() {
         // Fetches all teams
-        val teamDataList: ApiResponse<List<Team>>? = teamService.getTeams()
+        val teamDataList: ApiResponse<List<Team>>? = Services().services<ApiResponse<List<Team>>>(keyValue = keyValue)
         if (teamDataList == null) {
             println("There is no teams")
         } else {
@@ -50,7 +49,7 @@ class TeamFetcher {
         val input = readlnOrNull()?.toIntOrNull()
 
         if (input != null) {
-            val team: ApiResponse<Team>? = teamService.getATeam(input)
+            val team: ApiResponse<Team>? = Services().services<ApiResponse<Team>>(keyValue = "$keyValue/$input")
             val teamData = team?.data
             if (teamData != null) {
                 if (teamData.foundYear != 0) {
@@ -73,7 +72,21 @@ class TeamFetcher {
         val countryId : Int? = readlnOrNull()?.toIntOrNull()
         println("Please provide the name of the team")
         val teamName: String? = readlnOrNull()?.takeIf { it.isNotBlank() }
-        val teamDataList = teamService.getTeamByCountryOrTeamName(teamName = teamName, countryId = countryId)
+        val teamDataList: ApiResponse<List<Team>>?
+
+        when {
+            countryId == null && teamName != null -> {
+                teamDataList = Services().services<ApiResponse<List<Team>>>(keyValue = "$keyValue?teamName=$teamName")
+
+            }
+            countryId != null && teamName == null -> {
+                teamDataList = Services().services<ApiResponse<List<Team>>>(keyValue = "$keyValue?countryId=$countryId")
+
+            }
+            else -> {
+                teamDataList = Services().services<ApiResponse<List<Team>>>(keyValue = keyValue)
+            }
+        }
 
         if (teamDataList == null) {
             println("There is no teams")
@@ -116,10 +129,10 @@ class TeamFetcher {
 
     fun fetchTeamsWithCountry() {
         //fetches Teams from a specific country
-        val teamDataList: ApiResponse<List<Team>>? = teamService.getTeams()
+        val teamDataList: ApiResponse<List<Team>>? = Services().services<ApiResponse<List<Team>>>(keyValue = keyValue)
 
         // this service is used to retrieve the countries
-        val countryDataList: ApiResponse<List<Country>>? = countryService.getCountries()
+        val countryDataList: ApiResponse<List<Country>>? = Services().services<ApiResponse<List<Country>>>(keyValue = "countries")
 
         println("Please provide the name of the country(not case sensitive)")
         var countryFromUser: String? = readlnOrNull()?.takeIf { it.isNotBlank() }
@@ -169,7 +182,7 @@ class TeamFetcher {
 
     private fun teamFinder() {
         println("Please provide the name of your team")
-        val teamDataList: ApiResponse<List<Team>>? = teamService.getTeams()
+        val teamDataList: ApiResponse<List<Team>>? = Services().services<ApiResponse<List<Team>>>(keyValue = keyValue)
         if (teamDataList != null) {
             val teamList: List<Team> = teamDataList.data
             when(val possibleTeam = readlnOrNull()) {

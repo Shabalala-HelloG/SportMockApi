@@ -1,14 +1,15 @@
 package country
 
+import service.Services
 import client.ApiResponse
 
 class CountryFetcher {
 
-    private val countryService= CountryService()
+    private val keyValue = "countries"
 
     fun fetchAllCountries() {
         // Fetches all the countries
-        val countryDataList: ApiResponse<List<Country>>? = countryService.getCountries()
+        val countryDataList: ApiResponse<List<Country>>? = Services().services<ApiResponse<List<Country>>>(keyValue = keyValue)
 
         if (countryDataList == null) {
             println("The are no countries")
@@ -48,7 +49,7 @@ class CountryFetcher {
         val input = readlnOrNull()?.toIntOrNull()
 
         if (input != null) {
-            val country: ApiResponse<Country>? = countryService.getACountry(input)
+            val country: ApiResponse<Country>? = Services().services<ApiResponse<Country>>(keyValue = "$keyValue/$input")
             val countryData = country?.data
             if (countryData != null) {
                 println("${countryData.countryID}. ${countryData.name} in continent ${countryData.continent}")
@@ -73,7 +74,7 @@ class CountryFetcher {
         if (input != null) {
             val continentName : String? = checkContinent(input)
             if(continentName !=null){
-                val country: ApiResponse<Map<String,Country>>? = countryService.getACountryByContinent(continentName)
+                val country: ApiResponse<Map<String, Country>>? = Services().services<ApiResponse<Map<String,Country>>>(keyValue = "$keyValue?continent=$continentName")
                 val countryData = country?.data
                 if (countryData != null) {
                     for((name, continent, countryID) in countryData.values){
@@ -134,7 +135,7 @@ class CountryFetcher {
     private fun countryFinder() {
         //this should return a list
         println("Please provide the name for your country:")
-        val countryDataList: ApiResponse<List<Country>>? = countryService.getCountries()
+        val countryDataList: ApiResponse<List<Country>>? = Services().services<ApiResponse<List<Country>>>(keyValue = keyValue)
         if (countryDataList != null) {
             val countryList: List<Country> = countryDataList.data
             when (val possibleCountry = readlnOrNull()) {
